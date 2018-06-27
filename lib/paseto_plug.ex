@@ -7,7 +7,11 @@ defmodule PasetoPlug do
 
   import Plug.Conn
 
-  def init(opts) do
+  @type paseto_key :: {binary(), binary()} | binary()
+
+  @spec init(%{key_provider: (() -> paseto_key)}) :: paseto_key
+  def init(key_provider: key_provider) do
+    key_provider.()
   end
 
   def call(conn, config) do
@@ -15,13 +19,12 @@ defmodule PasetoPlug do
     |> get_auth_token()
     |> case do
       {:ok, token} ->
-        token
-        |> validate_token()
-        |> (&create_auth_response(conn, &1)).()
-
+        # TODO(ian): dont do the fake key below
+        validate_token(token, "FAKE_KEY")
       error ->
         error
     end
+    |> (&create_auth_response(conn, &1)).()
   end
 
   @spec get_auth_token(%Plug.Conn{}) :: {:ok, String.t()} | {:error, String.t()}
@@ -36,8 +39,8 @@ defmodule PasetoPlug do
     end
   end
 
-  @spec validate_token(String.t()) :: :ok | {:error, String.t()}
-  defp validate_token(token) do
+  @spec validate_token(String.t(), paseto_key) :: :ok | {:error, String.t()}
+  defp validate_token(token, key) do
     token
     # TODO(ian): Need to get the key loaded
     |> Paseto.parse_token(key)
