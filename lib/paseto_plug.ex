@@ -3,8 +3,6 @@ defmodule PasetoPlug do
   Documentation for PasetoPlug.
   """
 
-  require Logger
-
   import Plug.Conn
 
   @type paseto_key :: {binary(), binary()} | binary()
@@ -53,7 +51,6 @@ defmodule PasetoPlug do
         {:ok, String.trim(token)}
 
       error ->
-        Logger.debug("Failed to grab `authorization` header from conn. Got #{inspect(error)}")
         {:error, "Invalid Authorization Header. Expected `Authorization: Bearer <token>`"}
     end
   end
