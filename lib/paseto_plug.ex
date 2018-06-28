@@ -17,6 +17,7 @@ defmodule PasetoPlug do
   def call(conn, key) when is_binary(key) do
     do_call(conn, key)
   end
+
   def call(conn, public_key) do
     do_call(conn, public_key)
   end
@@ -27,6 +28,7 @@ defmodule PasetoPlug do
     |> case do
       {:ok, token} ->
         validate_token(token, key)
+
       error ->
         error
     end

@@ -36,7 +36,7 @@ defmodule PasetoPlugTest.V1 do
 
     alias KeyProvider
 
-    plug PasetoPlug, key_provider: &KeyProvider.public_key_provider/0
+    plug(PasetoPlug, key_provider: &KeyProvider.public_key_provider/0)
 
     get "/" do
       send_resp(conn, 200, "Paseto verified")
@@ -47,7 +47,7 @@ defmodule PasetoPlugTest.V1 do
     import Plug.Conn
     use Plug.Router
 
-    plug PasetoPlug, key_provider: fn -> :crypto.generate_key(:rsa, {2048, 65_637}) end
+    plug(PasetoPlug, key_provider: fn -> :crypto.generate_key(:rsa, {2048, 65_637}) end)
 
     get "/" do
       send_resp(conn, 200, "Paseto verified")
@@ -60,7 +60,7 @@ defmodule PasetoPlugTest.V1 do
 
     alias KeyProvider
 
-    plug PasetoPlug, key_provider: &KeyProvider.local_key_provider/0
+    plug(PasetoPlug, key_provider: &KeyProvider.local_key_provider/0)
 
     get "/" do
       send_resp(conn, 200, "Paseto verified")
@@ -71,7 +71,7 @@ defmodule PasetoPlugTest.V1 do
     import Plug.Conn
     use Plug.Router
 
-    plug PasetoPlug, key_provider: fn -> "invalid_key" end
+    plug(PasetoPlug, key_provider: fn -> "invalid_key" end)
 
     get "/" do
       send_resp(conn, 200, "Paseto verified")
@@ -103,7 +103,10 @@ defmodule PasetoPlugTest.V1 do
     test "Invalid V1 public token" do
       conn =
         conn(:get, "/")
-        |> put_req_header("authorization", "Bearer v1.public.dGVzdCBkYXRhecLVdIi75R6KdGB9wQkKIvB3G1St3flaBgmGefpCW6ujItt8Zfe3vKGnvjIu17NYTsQtAxZzwfT4_SqMCPVuyBwv_DXVmtvLD-edR4-ZiqflP7GOqxILTfGQftsHnWs9brZzz0hOh1_jyPbsZdBrwnR4E0kgHFEKfaOYzekdLdiOs8sbA9ylFdk6_Ma21F-fvFDxWpqkZmcey3CRjR_sdswgvNiCD1SfcPEv3eEHWFrO_7IJkaQDOlDZuv6gh5K4Khj9cfaDn05OaWlAO5esEbBYnaUGy9yyomekwCy4afqhLM-OaZ6EmINkLL47a2H3BcbqbdwVt9-BGnzY0togaw")
+        |> put_req_header(
+          "authorization",
+          "Bearer v1.public.dGVzdCBkYXRhecLVdIi75R6KdGB9wQkKIvB3G1St3flaBgmGefpCW6ujItt8Zfe3vKGnvjIu17NYTsQtAxZzwfT4_SqMCPVuyBwv_DXVmtvLD-edR4-ZiqflP7GOqxILTfGQftsHnWs9brZzz0hOh1_jyPbsZdBrwnR4E0kgHFEKfaOYzekdLdiOs8sbA9ylFdk6_Ma21F-fvFDxWpqkZmcey3CRjR_sdswgvNiCD1SfcPEv3eEHWFrO_7IJkaQDOlDZuv6gh5K4Khj9cfaDn05OaWlAO5esEbBYnaUGy9yyomekwCy4afqhLM-OaZ6EmINkLL47a2H3BcbqbdwVt9-BGnzY0togaw"
+        )
 
       assert TestRouterPublicInvalid.call(conn, []).status == 401
     end
