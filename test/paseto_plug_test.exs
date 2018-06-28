@@ -2,6 +2,8 @@ defmodule PasetoPlugTest do
   use ExUnit.Case
   use Plug.Test
 
+  alias KeyProvider
+
   doctest PasetoPlug
 
   defmodule KeyProvider do
@@ -10,7 +12,8 @@ defmodule PasetoPlugTest do
     @local_key "test_local_key"
 
     def public_key_provider do
-      @public_key
+      {pk, _sk} = @public_key
+      pk
     end
 
     def local_key_provider do
@@ -67,18 +70,31 @@ defmodule PasetoPlugTest do
   end
 
   describe "V1 Plug Tests" do
-    test "Invalid V1 local token" do
+    # test "Invalid V1 local token" do
+    #   conn =
+    #     conn(:get, "/")
+    #     |> put_req_header("authorization", "Bearer v1.local.VGhpcyBpcyBhIHRlc3QgbWVzc2FnZSe-sJyD2x_fCDGEUKDcvjU9y3jRHxD4iEJ8iQwwfMUq5jUR47J15uPbgyOmBkQCxNDydR0yV1iBR-GPpyE-NQw")
+
+    #   assert TestRouterLocalInvalid.call(conn, []).status == 401
+    # end
+
+    test "Valid V1 local token" do
+      local_key = KeyProvider.local_key_provider()
+      paseto = Paseto.V1.encrypt("test data", local_key)
+      {:ok, paseto_token} = Paseto.parse_token(paseto, local_key)
+
       conn =
         conn(:get, "/")
-        |> put_req_header("authorization", "Bearer v1.local.VGhpcyBpcyBhIHRlc3QgbWVzc2FnZSe-sJyD2x_fCDGEUKDcvjU9y3jRHxD4iEJ8iQwwfMUq5jUR47J15uPbgyOmBkQCxNDydR0yV1iBR-GPpyE-NQw")
+        |> put_req_header("authorization", "Bearer #{paseto}")
 
-      assert TestRouterLocalInvalid.call(conn, []).status == 401
+      retval = TestRouterLocal.call(conn, [])
+      assert retval.assigns.claims == paseto_token
     end
 
     test "Invalid V1 public token" do
       conn =
         conn(:get, "/")
-        |> put_req_header("authorization", "Bearer v1.local.VGhpcyBpcyBhIHRlc3QgbWVzc2FnZSe-sJyD2x_fCDGEUKDcvjU9y3jRHxD4iEJ8iQwwfMUq5jUR47J15uPbgyOmBkQCxNDydR0yV1iBR-GPpyE-NQw")
+        |> put_req_header("authorization", "Bearer v1.public.dGVzdCBkYXRhecLVdIi75R6KdGB9wQkKIvB3G1St3flaBgmGefpCW6ujItt8Zfe3vKGnvjIu17NYTsQtAxZzwfT4_SqMCPVuyBwv_DXVmtvLD-edR4-ZiqflP7GOqxILTfGQftsHnWs9brZzz0hOh1_jyPbsZdBrwnR4E0kgHFEKfaOYzekdLdiOs8sbA9ylFdk6_Ma21F-fvFDxWpqkZmcey3CRjR_sdswgvNiCD1SfcPEv3eEHWFrO_7IJkaQDOlDZuv6gh5K4Khj9cfaDn05OaWlAO5esEbBYnaUGy9yyomekwCy4afqhLM-OaZ6EmINkLL47a2H3BcbqbdwVt9-BGnzY0togaw")
 
       assert TestRouterPublicInvalid.call(conn, []).status == 401
     end
@@ -96,7 +112,7 @@ defmodule PasetoPlugTest do
     test "Invalid V2 public token" do
       conn =
         conn(:get, "/")
-        |> put_req_header("authorization", "Bearer v2.local.VGhpcyBpcyBhIHRlc3QgbWVzc2FnZSe-sJyD2x_fCDGEUKDcvjU9y3jRHxD4iEJ8iQwwfMUq5jUR47J15uPbgyOmBkQCxNDydR0yV1iBR-GPpyE-NQw")
+        |> put_req_header("authorization", "Bearer v2.public.VGhpcyBpcyBhIHRlc3QgbWVzc2FnZSe-sJyD2x_fCDGEUKDcvjU9y3jRHxD4iEJ8iQwwfMUq5jUR47J15uPbgyOmBkQCxNDydR0yV1iBR-GPpyE-NQw")
 
       assert TestRouterPublicInvalid.call(conn, []).status == 401
     end

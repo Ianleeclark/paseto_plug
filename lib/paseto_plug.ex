@@ -14,13 +14,19 @@ defmodule PasetoPlug do
     key_provider.()
   end
 
-  def call(conn, config) do
+  def call(conn, key) when is_binary(key) do
+    do_call(conn, key)
+  end
+  def call(conn, public_key) do
+    do_call(conn, public_key)
+  end
+
+  defp do_call(conn, key) do
     conn
     |> get_auth_token()
     |> case do
       {:ok, token} ->
-        # TODO(ian): dont do the fake key below
-        validate_token(token, "FAKE_KEY")
+        validate_token(token, key)
       error ->
         error
     end
@@ -31,7 +37,7 @@ defmodule PasetoPlug do
   defp get_auth_token(%Plug.Conn{} = conn) do
     case get_req_header(conn, "authorization") do
       ["Bearer " <> token] ->
-        {:ok, token}
+        {:ok, String.trim(token)}
 
       error ->
         Logger.debug("Failed to grab `authorization` header from conn. Got #{inspect(error)}")
@@ -39,10 +45,9 @@ defmodule PasetoPlug do
     end
   end
 
-  @spec validate_token(String.t(), paseto_key) :: :ok | {:error, String.t()}
+  @spec validate_token(String.t(), paseto_key) :: {:ok, %Paseto.Token{}} | {:error, String.t()}
   defp validate_token(token, key) do
     token
-    # TODO(ian): Need to get the key loaded
     |> Paseto.parse_token(key)
   end
 
@@ -53,7 +58,7 @@ defmodule PasetoPlug do
   defp create_auth_response(%Plug.Conn{} = conn, token_validation) do
     case token_validation do
       {:ok, token} ->
-        assign(conn, :claims, token.payload)
+        assign(conn, :claims, token)
 
       {:error, reason} ->
         conn
