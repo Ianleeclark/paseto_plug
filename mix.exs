@@ -5,9 +5,12 @@ defmodule PasetoPlug.MixProject do
     [
       app: :paseto_plug,
       version: "0.1.0",
-      elixir: "~> 1.6",
+      elixir: "~> 1.5",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      aliases: aliases(),
+      deps: deps(),
+      description: description(),
+      package: package()
     ]
   end
 
@@ -20,7 +23,30 @@ defmodule PasetoPlug.MixProject do
   defp deps do
     [
       {:paseto, "~> 0.3.0"},
-      {:plug, "~> 1.0"}
+      {:plug, "~> 1.0"},
+      # Non-core dependencies, but nice-to-have
+      {:credo, "~> 0.9.1", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.16", only: :dev, runtime: false}
+    ]
+  end
+
+  defp aliases do
+    [
+      testall: ["credo", "test"]
+    ]
+  end
+
+  defp description do
+    "A plug for validating issued Paseto (Platform Agnostic Security Tokens)."
+  end
+
+  defp package do
+    [
+      name: "paseto_plug",
+      files: ["lib", "mix.exs", "README.*", "LICENSE"],
+      maintainers: ["Ian Lee Clark"],
+      licenses: ["LGPL"],
+      links: %{"Github" => "https://github.com/GrappigPanda/paseto_plug"}
     ]
   end
 end
