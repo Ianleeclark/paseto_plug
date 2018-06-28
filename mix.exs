@@ -21,7 +21,9 @@ defmodule PasetoPlug.MixProject do
     [
       {:paseto, "~> 0.3.0"},
       {:plug, "~> 1.0"},
-      {:credo, "~> 0.9.1", only: [:dev, :test], runtime: false}
+      # Non-core dependencies, but nice-to-have
+      {:credo, "~> 0.9.1", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.16", only: :dev, runtime: false}
     ]
   end
 end
