@@ -4,7 +4,7 @@ defmodule PasetoPlug.MixProject do
   def project do
     [
       app: :paseto_plug,
-      version: "0.1.0",
+      version: "0.2.0",
       elixir: "~> 1.5",
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
@@ -43,9 +43,9 @@ defmodule PasetoPlug.MixProject do
   defp package do
     [
       name: "paseto_plug",
-      files: ["lib", "mix.exs", "README.*", "LICENSE"],
+      files: ["lib", "mix.exs", "LICENSE"],
       maintainers: ["Ian Lee Clark"],
-      licenses: ["LGPL"],
+      licenses: ["BSD 3-clause"],
       links: %{"Github" => "https://github.com/GrappigPanda/paseto_plug"}
     ]
   end
