@@ -59,9 +59,3 @@ Now, whenever a request goes through, the requester will either face a 401 (if t
 # You can grab it by using
 conn.assigns.claims
 ```
-
-
-## Documentation
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/paseto_plug](https://hexdocs.pm/paseto_plug).
