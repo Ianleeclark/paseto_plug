@@ -46,7 +46,7 @@ defmodule PasetoPlug.MixProject do
       files: ["lib", "mix.exs", "LICENSE"],
       maintainers: ["Ian Lee Clark"],
       licenses: ["BSD 3-clause"],
-      links: %{"Github" => "https://github.com/GrappigPanda/paseto_plug"}
+      links: %{"Github" => "https://github.com/ianleeclark/paseto_plug"}
     ]
   end
 end
