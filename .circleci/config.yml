@@ -11,7 +11,7 @@ jobs:
     steps:
       - checkout
 
-      - run: wget https://download.libsodium.org/libsodium/releases/old/unsupported/libsodium-1.0.9.tar.gz
+      - run: wget https://download.libsodium.org/libsodium/releases/LATEST.tar.gz
       - run: tar xf libsodium-1.0.9.tar.gz
       - run: cd libsodium-1.0.9; ./configure; make; sudo make install
 
