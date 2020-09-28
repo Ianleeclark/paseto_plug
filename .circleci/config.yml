@@ -12,8 +12,8 @@ jobs:
       - checkout
 
       - run: wget https://download.libsodium.org/libsodium/releases/LATEST.tar.gz
-      - run: tar xf libsodium-1.0.9.tar.gz
-      - run: cd libsodium-1.0.9; ./configure; make; sudo make install
+      - run: tar xf LATEST.tar.gz
+      - run: cd libsodium-stable; ./configure; make; sudo make install
 
       - run: mix local.hex --force  # install Hex locally (without prompt)
       - run: mix local.rebar --force  # fetch a copy of rebar (without prompt)
