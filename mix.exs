@@ -10,7 +10,8 @@ defmodule PasetoPlug.MixProject do
       aliases: aliases(),
       deps: deps(),
       description: description(),
-      package: package()
+      package: package(),
+      preferred_cli_env: [testall: :test]
     ]
   end
 
@@ -22,7 +23,7 @@ defmodule PasetoPlug.MixProject do
 
   defp deps do
     [
-      {:paseto, "~> 1.3"},
+      {:paseto, "~> 1.3.1"},
       {:plug, "~> 1.0"},
       # Non-core dependencies, but nice-to-have
       {:credo, "~> 0.9.1", only: [:dev, :test], runtime: false},
